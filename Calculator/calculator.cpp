@@ -59,7 +59,6 @@ Calculator::Calculator(QWidget *parent)
     Button *comlogarithmButton = createButton(tr("lg"), SLOT(logarithmicOperatorClicked()));
     Button *exponentButton = createButton(tr("e"), SLOT(logarithmicOperatorClicked()));
 
-
     QGridLayout *mainLayout = new QGridLayout;
     mainLayout->setSizeConstraint(QLayout::SetFixedSize);
     mainLayout->addWidget(display, 0, 0, 1, 9);
@@ -134,8 +133,16 @@ void Calculator::trigonometricOperatorClicked()
     } else if (clickedOperator == tr("tan")) {
         result = std::tan(operand*PI/180);
     } else if (clickedOperator == tr("asin")) {
+        if ((operand < -1) || (operand > 1)) {
+            abortOperation();
+            return;
+        }
         result = std::asin(operand)*180/PI;
     } else if (clickedOperator == tr("acos")) {
+        if ((operand < -1) || (operand > 1)) {
+            abortOperation();
+            return;
+        }
         result = std::acos(operand)*180/PI;
     } else if (clickedOperator == tr("atan")) {
         result = std::atan(operand)*180/PI;
@@ -151,8 +158,16 @@ void Calculator::logarithmicOperatorClicked()
     double operand = display->text().toDouble();
     double result = 0.0;
     if (clickedOperator == tr("ln")) {
+        if (operand <= 0.0) {
+            abortOperation();
+            return;
+        }
         result = std::log(operand);
     } else if (clickedOperator == tr("lg")) {
+        if (operand <= 0.0) {
+            abortOperation();
+            return;
+        }
         result = std::log10(operand);
     } else if (clickedOperator == tr("e")) {
         result = std::exp(operand);
@@ -364,24 +379,6 @@ bool Calculator::calculate(double rightOperand, const QString &pendingOperator)
         if (rightOperand == 0)
             return false;
         factorSoFar /= rightOperand;
-    } else if (pendingOperator == tr("sin")) {
-        factorSoFar = std::sin(rightOperand);
-    } else if (pendingOperator == tr("cos")) {
-        factorSoFar = std::cos(rightOperand);
-    } else if (pendingOperator == tr("tan")) {
-        factorSoFar = std::tan(rightOperand);
-    } else if (pendingOperator == tr("asin")) {
-        factorSoFar = std::asin(rightOperand);
-    } else if (pendingOperator == tr("acos")) {
-        factorSoFar = std::acos(rightOperand);
-    } else if (pendingOperator == tr("atan")) {
-        factorSoFar = std::atan(rightOperand);
-    } else if (pendingOperator == tr("ln")) {
-        factorSoFar = std::log(rightOperand);
-    } else if (pendingOperator == tr("lg")) {
-        factorSoFar = std::log10(rightOperand);
-    } else if (pendingOperator == tr("e")) {
-        factorSoFar = std::exp(rightOperand);
     }
     return true;
 }
