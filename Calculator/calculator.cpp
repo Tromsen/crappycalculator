@@ -3,8 +3,6 @@
 #include "button.h"
 #include "calculator.h"
 
-#define PI 3.14159265
-
 Calculator::Calculator(QWidget *parent)
     : QWidget(parent)
 {
@@ -51,9 +49,11 @@ Calculator::Calculator(QWidget *parent)
     Button *sineButton = createButton(tr("sin"), SLOT(trigonometricOperatorClicked()));
     Button *cosineButton = createButton(tr("cos"), SLOT(trigonometricOperatorClicked()));
     Button *tangentButton = createButton(tr("tan"), SLOT(trigonometricOperatorClicked()));
+    Button *cotangentButton = createButton(tr("ctg"), SLOT(trigonometricOperatorClicked()));
     Button *arcsineButton = createButton(tr("asin"), SLOT(trigonometricOperatorClicked()));
     Button *arccosineButton = createButton(tr("acos"), SLOT(trigonometricOperatorClicked()));
     Button *arctangentButton = createButton(tr("atan"), SLOT(trigonometricOperatorClicked()));
+    Button *arccotangentButton = createButton(tr("arcctg"), SLOT(trigonometricOperatorClicked()));
 
     Button *logarithmButton = createButton(tr("ln"), SLOT(logarithmicOperatorClicked()));
     Button *comlogarithmButton = createButton(tr("lg"), SLOT(logarithmicOperatorClicked()));
@@ -89,14 +89,16 @@ Calculator::Calculator(QWidget *parent)
     mainLayout->addWidget(squareRootButton, 2, 5);
     mainLayout->addWidget(powerButton, 3, 5);
     mainLayout->addWidget(reciprocalButton, 4, 5);
-    mainLayout->addWidget(equalButton, 5, 5, 1, 4);
+    mainLayout->addWidget(equalButton, 5, 5);
 
     mainLayout->addWidget(sineButton, 2, 6);
     mainLayout->addWidget(cosineButton, 3, 6);
     mainLayout->addWidget(tangentButton, 4, 6);
+    mainLayout->addWidget(cotangentButton, 5, 6);
     mainLayout->addWidget(arcsineButton, 2, 7);
     mainLayout->addWidget(arccosineButton, 3, 7);
     mainLayout->addWidget(arctangentButton, 4, 7);
+    mainLayout->addWidget(arccotangentButton, 5, 7);
 
     mainLayout->addWidget(logarithmButton, 2, 8);
     mainLayout->addWidget(comlogarithmButton, 3, 8);
@@ -127,25 +129,29 @@ void Calculator::trigonometricOperatorClicked()
     double result = 0.0;
 
     if (clickedOperator == tr("sin")) {
-        result = std::sin(operand*PI/180);
+        result = std::sin(operand*M_PI/180);
     } else if (clickedOperator == tr("cos")) {
-        result = std::cos(operand*PI/180);
+        result = std::cos(operand*M_PI/180);
     } else if (clickedOperator == tr("tan")) {
-        result = std::tan(operand*PI/180);
+        result = std::tan(operand*M_PI/180);
+    } else if (clickedOperator == tr("ctg")) {
+        result = std::tan(M_PI_2 - operand*M_PI/180);
     } else if (clickedOperator == tr("asin")) {
         if ((operand < -1) || (operand > 1)) {
             abortOperation();
             return;
         }
-        result = std::asin(operand)*180/PI;
+        result = std::asin(operand)*180/M_PI;
     } else if (clickedOperator == tr("acos")) {
         if ((operand < -1) || (operand > 1)) {
             abortOperation();
             return;
         }
-        result = std::acos(operand)*180/PI;
+        result = std::acos(operand)*180/M_PI;
     } else if (clickedOperator == tr("atan")) {
-        result = std::atan(operand)*180/PI;
+        result = std::atan(operand)*180/M_PI;
+    } else if (clickedOperator == tr("arcctg")) {
+        result = (M_PI/2 - std::atan(operand))*180/M_PI;
     }
     display->setText(QString::number(result));
     waitingForOperand = true;
